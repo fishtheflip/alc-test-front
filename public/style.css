@@ -1,0 +1,26 @@
+.main-block{
+    margin-top: 40px;
+}
+
+.btn-field{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active{
+    color:red;
+}
+tr{
+    cursor: pointer;
+}
+.pag-field{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.form-btn-field{
+    margin-top: 20px;
+}
+
