@@ -1,41 +1,56 @@
 <template>
   <div id="app">
-    <Navbar />
-    <div class="container">
-      
-      <SortComp 
-      :filtredByAbc="filtredByAbc"
-      :filteredByPrice="filteredByPrice"
-      :filtredByTotal="filtredByTotal"
-      />
-      <TableComp  :users="users"
-                  :totalSum="totalSum"
-                  :changeActive="changeActive"
-                  :cangeModalVisible="cangeModalVisible"
-                  :setFormControl="setFormControl"
-                  
-      />
-      <AddButton :setVisibleForm= "setVisibleForm"/>
-      <PagField/>
-      <div v-if="modalVisible">
-        <Modal  :currentModalID="currentModalID"
-                :currentModalName="currentModalName"
-                :closeModal="closeModal"
-                :deleteUser="deleteUser"/>
-      </div>
+        <Navbar />
+        <div class="container">
+          
+              <!-- В компонент SortComp передаем функции по сортировки пользователей -->
+              <SortComp 
+              :filtredByAbc="filtredByAbc"
+              :filteredByPrice="filteredByPrice"
+              :filtredByTotal="filtredByTotal"
+              />
+              <!-- В компонент TableComp передаем объект users, -->
+              <!-- функции: получения суммы всех элементов, подчеркивание текста,-->
+              <!-- изменения видимости модального окна,  -->
+              <!-- получения формы редактирования  пользователей -->
+              <TableComp  :users="users"
+                          :totalSum="totalSum"
+                          :changeActive="changeActive"
+                          :cangeModalVisible="cangeModalVisible"
+                          :setFormControl="setFormControl"
+                          
+              />
 
-      <div v-if="visibleFormControl">
-        <FormControl  :user="users[currentUserFormControl]"
-                      @updateUser="updateUser"
-                      :setVisibleFormControl="setVisibleFormControl"/>
-      </div>
-      
-      <div v-if="visibleForm">
-        <Form :setVisibleForm="setVisibleForm" 
-              @addNewUser="addNewUser"/>
-      </div>
-      
-    </div>
+              <!-- Передаем функцию получения формы добавления пользователей -->
+              <AddButton :setVisibleForm= "setVisibleForm"/>
+
+              <PagField/>
+
+              <!--Видимость модального окна зависит от свойства modalVisible -->
+              <!-- Передаем текущее имя пользователя, id,  -->
+              <!-- функции по удалению пользователя, закрыте модального окна -->
+              <div v-if="modalVisible">
+                    <Modal  :currentModalID="currentModalID"
+                            :currentModalName="currentModalName"
+                            :closeModal="closeModal"
+                            :deleteUser="deleteUser"/>
+              </div>
+
+              <!-- Форма редактирования пользователя, передается объект пользователя, -->
+              <!-- видимость компонента, обновления пользователя -->
+              <div v-if="visibleFormControl">
+                    <FormControl  :user="users[currentUserFormControl]"
+                                  @updateUser="updateUser"
+                                  :setVisibleFormControl="setVisibleFormControl"/>
+              </div>
+              
+              <!-- В компонент передается функция добавления нового пользователя -->
+              <div v-if="visibleForm">
+                    <Form :setVisibleForm="setVisibleForm" 
+                          @addNewUser="addNewUser"/>
+              </div>
+          
+        </div>
     
     
   </div>
@@ -53,8 +68,9 @@ import dataUser from './data/data'
 import Modal from './components/Modal'
 import FormControl from './components/FormControl'
 
+// при получении массива входных данных создаем новый объект с добавлением свойства
+// isActive для подчеркивания строчки пользователя
 const dataVal = Object.assign([], dataUser).map(item=> ({ ...item, isActive: false }))
-
 
 
 export default {
@@ -82,6 +98,8 @@ export default {
     }
   },
   methods:{
+
+    // видимость формы
       setVisibleForm(){
             if(!this.visibleForm){
               this.visibleForm = true
@@ -98,6 +116,8 @@ export default {
               this.visibleFormControl = false
             }
     },
+
+    // сумма цены элементов у пользователя 
       totalSum(arr){
             if(arr.length === 1){
                 return arr[0].itemCost;
@@ -108,6 +128,8 @@ export default {
             });
             return calc;
         },
+
+        // функции фильтрации
       filtredByAbc(){
             const filtredArr = this.users.sort(function(a, b){
                 let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
@@ -136,6 +158,8 @@ export default {
             });
             this.users = filteredByPrice;
         },
+        
+      // функция выдиления пользователя 
       changeActive(user){
             if(!user.isActive){
                 user.isActive = true;
@@ -175,7 +199,6 @@ export default {
         updateUser(item){
           dataVal.splice(item.id, 1)
           dataVal.push(item)
-        
         }
   }
 }
