@@ -1,6 +1,7 @@
 
 const dataUser = [
     {
+    id: 0,
     name: "Иванов",
     surname: "И",
     middlename: "И",
@@ -9,10 +10,10 @@ const dataUser = [
         itemName: 'Itemname1',
         itemCost: 95000
         }
-    ],
-    isActive: false
+    ]
     },
-    {    
+    {   
+    id: 1,
     name: "Аидоров",
     surname: "С",
     middlename: "С",
@@ -33,7 +34,7 @@ const dataUser = [
     ]
     },
     {
-           
+    id: 2,      
     name: "Петров",
     surname: "П",
     middlename: "П",

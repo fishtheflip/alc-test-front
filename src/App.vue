@@ -2,19 +2,37 @@
   <div id="app">
     <Navbar />
     <div class="container">
+      
       <SortComp 
       :filtredByAbc="filtredByAbc"
       :filteredByPrice="filteredByPrice"
       :filtredByTotal="filtredByTotal"
       />
-      <TableComp :users="users"
-      :totalSum="totalSum"
-      :changeActive="changeActive"/>
+      <TableComp  :users="users"
+                  :totalSum="totalSum"
+                  :changeActive="changeActive"
+                  :cangeModalVisible="cangeModalVisible"
+                  :setFormControl="setFormControl"
+                  
+      />
       <AddButton :setVisibleForm= "setVisibleForm"/>
       <PagField/>
+      <div v-if="modalVisible">
+        <Modal  :currentModalID="currentModalID"
+                :currentModalName="currentModalName"
+                :closeModal="closeModal"
+                :deleteUser="deleteUser"/>
+      </div>
+
+      <div v-if="visibleFormControl">
+        <FormControl  :user="users[currentUserFormControl]"
+                      @updateUser="updateUser"
+                      :setVisibleFormControl="setVisibleFormControl"/>
+      </div>
       
-      <div v-if="visibleForm === true">
-        <Form :setVisibleForm="setVisibleForm" :addNewUser="addNewUser"/>
+      <div v-if="visibleForm">
+        <Form :setVisibleForm="setVisibleForm" 
+              @addNewUser="addNewUser"/>
       </div>
       
     </div>
@@ -32,6 +50,11 @@ import AddButton from './components/AddButton'
 import PagField from './components/PagField'
 import Form from './components/Form'
 import dataUser from './data/data'
+import Modal from './components/Modal'
+import FormControl from './components/FormControl'
+
+const dataVal = Object.assign([], dataUser).map(item=> ({ ...item, isActive: false }))
+
 
 
 export default {
@@ -42,21 +65,37 @@ export default {
      TableComp,
      AddButton,
      PagField,
-     Form
+     Form,
+     Modal,
+     FormControl
   },
   data(){
     return{
-      users: dataUser,
+      users: dataVal,
       hello: 'Hello',
-      visibleForm:false
+      visibleForm:false,
+      modalVisible: false,
+      currentModalID: 0,
+      currentModalName: '',
+      visibleFormControl: false,
+      currentUserFormControl: 0
     }
   },
   methods:{
       setVisibleForm(){
-            if(this.visibleForm === false){
+            if(!this.visibleForm){
               this.visibleForm = true
             } else{
               this.visibleForm = false
+            }
+    },
+    setVisibleFormControl(){
+      
+            if(!this.visibleFormControl){
+              
+              this.visibleFormControl = true
+            } else{
+              this.visibleFormControl = false
             }
     },
       totalSum(arr){
@@ -69,10 +108,9 @@ export default {
             });
             return calc;
         },
-      
       filtredByAbc(){
             const filtredArr = this.users.sort(function(a, b){
-                let nameA=a.name.toLowerCase(), nameB = b.name.toLowerCase()
+                let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase()
                 if (nameA < nameB) return - 1;
                 if (nameA > nameB)  return 1;
                 return 0;
@@ -99,18 +137,46 @@ export default {
             this.users = filteredByPrice;
         },
       changeActive(user){
-            if(user.isActive === false){
+            if(!user.isActive){
                 user.isActive = true;
             } else {
                 user.isActive = false;
             }
         },
-        addNewUser(){
-
+        addNewUser(item){
+          dataVal.push({...item, isActive: false, id: dataVal.length});
+          console.log(dataVal);
+        },
+        cangeModalVisible(e, id, name){
+            if(!this.modalVisible){
+                this.modalVisible = true;
+            } else {
+                this.modalVisible = false;
+            }
+          console.log("Deleted",id, name)
+          this.currentModalID = id
+          this.currentModalName = name
+          e.preventDefault()
+        },
+        closeModal(){
+          this.modalVisible = false
+        },
+        deleteUser(id){
+          dataVal.splice(id, 1)
           
-
+          console.log(id)
+          this.closeModal()
+        },
+        setFormControl( item){
+          console.log(item)
+          this.currentUserFormControl = item.id
+          this.setVisibleFormControl()
+        },
+        updateUser(item){
+          dataVal.splice(item.id, 1)
+          dataVal.push(item)
+        
         }
-      
   }
 }
 </script>

@@ -9,7 +9,7 @@
 }
 
 .active{
-    color:red;
+    color:black;
 }
 tr{
     cursor: pointer;
@@ -22,5 +22,15 @@ tr{
 }
 .form-btn-field{
     margin-top: 20px;
+}
+.modal-text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.total-sum{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 

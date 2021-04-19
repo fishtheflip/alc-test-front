@@ -11,8 +11,10 @@
                 <tbody>
                 <tr class="table-dark" v-for="(user, index) in users" v-bind:key="index">
                     <th scope="row" 
-                    v-bind:class="{active:user.isActive }"
+                    :class="{active:user.isActive }"
                     @click="changeActive(user)"
+                    @contextmenu="cangeModalVisible($event,user.id, user.name)"
+                    @dblclick="setFormControl(user)"
                     >{{user.name + ' '}} {{user.surname}}. {{user.middlename}}</th>
                     <td>{{user.items.length}}</td>
                     <td>{{totalSum(user.items)}}</td>
@@ -23,7 +25,7 @@
 <script>
 export default {
     name: 'TableComp',
-    props:['users', 'totalSum', "changeActive"],
+    props:['users', 'totalSum', 'changeActive', 'cangeModalVisible', 'setFormControl'],
     data(){
         return{
             
